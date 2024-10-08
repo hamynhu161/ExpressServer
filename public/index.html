@@ -7,19 +7,36 @@
 
 <body>
     <center>
-        <h1>Hello from node & express server!</h1>
+        <h1>Herkkuja!</h1>
 
         <div id="sisältö"></div>
     </center>
 
     <script>
+        async function fetchData(){
         document.getElementById("sisältö").innerHTML = "<h4>Ladataan herkkuja </h4>"
         
-        fetch("http://localhost:3300/api/herkut")
-        .then(res => res.json())
-        .then(js => console.log(js))
+        var x ='<table><thead><th>Herkun nimi</th><th>Tuotekoodi</th></thead><tbody>'
+        
+        try{
+            const response = await fetch("http://localhost:3300/api/herkut")
+            const herkkudata = await response.json()
+            await herkkudata.map(h => {//loopataan läpi oliot map funktiolla, h on 1 herkkuolio
+            x += `<tr><td>${h.name}</td><td>${h.id}</td></tr>`    //käytä takamerkeja "`": niiden arvoa tulkita. Jos "'": näytetään vain tekstinä.
+            })
 
+            //taulukko päätetään ja renderöidään html elementtin
+            x += '</tbody></table>'
+            document.getElementById("sisältö").innerHTML = x
+        } 
+        catch (error) {
+            console.error("Error fetching data:" , error)
+        }
+        }
+
+        fetchData()             //Kutsutaan funktio
     </script>
+
 </body>
 
 </html>
